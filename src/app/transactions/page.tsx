@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { Plus, Trash2, ArrowRightLeft, Save, X, Pencil, Filter, RotateCcw } from "lucide-react";
 
@@ -88,7 +88,7 @@ export default function TransactionsPage() {
       });
   }, []);
 
-  const fetchTransactions = (m = selectedMonth, y = selectedYear) => {
+  const fetchTransactions = useCallback((m = selectedMonth, y = selectedYear) => {
     const params = new URLSearchParams({ limit: "100" });
     if (m !== "ALL") params.append("month", m);
     if (y !== "ALL") params.append("year", y);
@@ -106,11 +106,11 @@ export default function TransactionsPage() {
         console.error("Failed to fetch transactions:", err);
         setTransactions([]);
       });
-  };
+  }, [selectedMonth, selectedYear]);
 
   useEffect(() => {
     fetchTransactions(selectedMonth, selectedYear);
-  }, [selectedMonth, selectedYear]);
+  }, [fetchTransactions, selectedMonth, selectedYear]);
 
   const handleOpenCreateModal = () => {
     setEditingTxId(null);

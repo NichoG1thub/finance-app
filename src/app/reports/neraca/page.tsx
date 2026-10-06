@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { FileText, FileSpreadsheet } from "lucide-react";
 import jsPDF from "jspdf";
 import * as XLSX from "xlsx";
@@ -10,19 +10,23 @@ export default function NeracaPage() {
   const [loading, setLoading] = useState(true);
   const [asOfDate, setAsOfDate] = useState(new Date().toISOString().split('T')[0]);
 
-  const fetchReport = () => {
+  const fetchReport = useCallback(() => {
     setLoading(true);
     fetch(`/api/reports/neraca?date=${asOfDate}`)
       .then(res => res.json())
       .then(d => {
         setData(d);
         setLoading(false);
+      })
+      .catch(err => {
+        console.error(err);
+        setLoading(false);
       });
-  };
+  }, [asOfDate]);
 
   useEffect(() => {
     fetchReport();
-  }, []);
+  }, [fetchReport]);
 
   const formatIDR = (val: number) => 
     new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(val);

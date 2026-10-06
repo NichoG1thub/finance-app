@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Download, FileText, FileSpreadsheet } from "lucide-react";
 import jsPDF from "jspdf";
 import * as XLSX from "xlsx";
@@ -11,19 +11,23 @@ export default function LabaRugiPage() {
   const [startDate, setStartDate] = useState(new Date(new Date().getFullYear(), 0, 1).toISOString().split('T')[0]);
   const [endDate, setEndDate] = useState(new Date().toISOString().split('T')[0]);
 
-  const fetchReport = () => {
+  const fetchReport = useCallback(() => {
     setLoading(true);
     fetch(`/api/reports/laba-rugi?startDate=${startDate}&endDate=${endDate}`)
       .then(res => res.json())
       .then(d => {
         setData(d);
         setLoading(false);
+      })
+      .catch(err => {
+        console.error(err);
+        setLoading(false);
       });
-  };
+  }, [startDate, endDate]);
 
   useEffect(() => {
     fetchReport();
-  }, []);
+  }, [fetchReport]);
 
   const formatIDR = (val: number) => 
     new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(val);

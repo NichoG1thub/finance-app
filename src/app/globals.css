@@ -8,23 +8,29 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-inter);
 }
 
 body {
   background: #f8fafc;
   color: #0f172a;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), Arial, Helvetica, sans-serif;
 }
 
-/* Force text color in textboxes/inputs/selects to black */
-input, select, textarea {
-  color: #000000 !important;
-  background-color: #ffffff !important;
+/* Ensure text is visible in form controls */
+input,
+select,
+textarea {
+  color: #0f172a;
 }
 
-input::placeholder, textarea::placeholder {
-  color: #64748b !important;
+input::placeholder,
+textarea::placeholder {
+  color: #94a3b8;
 }
 
+/* Fix select dropdown option text color */
+select option {
+  color: #0f172a;
+  background-color: #ffffff;
+}
