@@ -1,0 +1,110 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ADMIN
+  ACCOUNTANT
+  VIEWER
+}
+
+enum AccountCategory {
+  ASET
+  LIABILITAS
+  EKUITAS
+  PENDAPATAN
+  BEBAN
+}
+
+enum EntryType {
+  DEBIT
+  CREDIT
+}
+
+model User {
+  id           String         @id @default(uuid())
+  name         String?
+  email        String         @unique
+  passwordHash String
+  role         Role           @default(VIEWER)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  
+  transactions Transaction[]
+  exchangeRates ExchangeRate[]
+  auditLogs     AuditLog[]
+}
+
+model Account {
+  id          String          @id @default(uuid())
+  code        String          @unique
+  name        String
+  category    AccountCategory
+  type        String?
+  description String?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  journalEntries JournalEntry[]
+}
+
+model Transaction {
+  id               String   @id @default(uuid())
+  date             DateTime
+  description      String
+  category         String?
+  originalCurrency String   @default("IDR")
+  baseCurrency     String   @default("IDR")
+  exchangeRate     Decimal  @default(1.0) @db.Decimal(19, 4)
+  amountOriginal   Decimal  @db.Decimal(19, 4)
+  amountBase       Decimal  @db.Decimal(19, 4)
+  attachmentUrl    String?
+  createdById      String
+  createdBy        User     @relation(fields: [createdById], references: [id])
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  journalEntries   JournalEntry[]
+}
+
+model JournalEntry {
+  id             String      @id @default(uuid())
+  transactionId  String
+  transaction    Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  accountId      String
+  account        Account     @relation(fields: [accountId], references: [id])
+  type           EntryType
+  amountOriginal Decimal     @db.Decimal(19, 4)
+  amountBase     Decimal     @db.Decimal(19, 4)
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+}
+
+model ExchangeRate {
+  id           String   @id @default(uuid())
+  date         DateTime
+  currencyFrom String
+  currencyTo   String   @default("IDR")
+  rate         Decimal  @db.Decimal(19, 4)
+  createdById  String
+  createdBy    User     @relation(fields: [createdById], references: [id])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  @@unique([date, currencyFrom, currencyTo])
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  action    String
+  entity    String
+  entityId  String
+  details   String?
+  createdAt DateTime @default(now())
+}

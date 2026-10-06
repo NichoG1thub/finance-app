@@ -1,0 +1,19 @@
+{
+  "/_global-error/page": "app/_global-error/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/accounts/page": "app/accounts/page.js",
+  "/api/accounts/[id]/route": "app/api/accounts/[id]/route.js",
+  "/api/accounts/route": "app/api/accounts/route.js",
+  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
+  "/api/dashboard/route": "app/api/dashboard/route.js",
+  "/api/reports/laba-rugi/route": "app/api/reports/laba-rugi/route.js",
+  "/api/reports/neraca/route": "app/api/reports/neraca/route.js",
+  "/api/transactions/[id]/route": "app/api/transactions/[id]/route.js",
+  "/api/transactions/route": "app/api/transactions/route.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/login/page": "app/login/page.js",
+  "/page": "app/page.js",
+  "/reports/laba-rugi/page": "app/reports/laba-rugi/page.js",
+  "/reports/neraca/page": "app/reports/neraca/page.js",
+  "/transactions/page": "app/transactions/page.js"
+}
